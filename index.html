@@ -4,23 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Tracker Home</title>
 </head>
 
 <body>
     <h1 id="fullinf" style="color:green"></h1>
     <h2 id="inf" style="color:brown"></h2>
     <img id="im">
-    <canvas id="canvas"></canvas>
     </br>
-    <input type="text" id="inp">
+    <input type="text" id="inp" placeholder="type a message">
     <button onclick="alertMessage()">SEND</button>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+
+
+
     <script>
+        const image = document.getElementById("im")
         const socket = io.connect("https://tracker-serv.herokuapp.com")
         socket.on("image", (info) => {
-            // console.log(e);
-            const image = document.getElementById("im")
             fullinf.innerHTML = info.info.split('-').slice(-1)[0]
             inf.innerHTML = info.info
             image.style.width = "700.px"
@@ -29,21 +30,10 @@
         })
         function alertMessage() {
 
-            // console.log(inp.value);
-
             socket.emit("alert", { message: inp.value })
+            inp.value = ''
         }
-        // var ctx = document.getElementById('canvas').getContext('2d');
 
-        // ...
-
-        // socket.on("image", function (info) {
-        //     if (info.image) {
-        //         var img = new Image();
-        //         img.src = 'data:image/jpeg;base64,' + info.buffer;
-        //         ctx.drawImage(img, 0, 0);
-        //     }
-        // });
     </script>
 </body>
 
