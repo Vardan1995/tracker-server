@@ -5,30 +5,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tracker Home</title>
+    <style>
+        body {
+            background-color: grey;
+        }
+
+        .wrap {
+            border: 2px solid green;
+            margin: 10px;
+            display: inline-block;
+            background-color: rgb(98, 104, 17);
+        }
+
+        p {
+            margin: 2px;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
     <h1 id="fullinf" style="color:green"></h1>
     <h2 id="inf" style="color:brown"></h2>
-    <img id="im">
-    </br>
     <input type="text" id="inp" placeholder="type a message">
     <button onclick="alertMessage()">SEND</button>
+    </br>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 
 
 
     <script>
-        const image = document.getElementById("im")
         const socket = io.connect("https://tracker-serv.herokuapp.com")
+        let ids = []
         ///
         socket.emit('subscribe', 1234);
         socket.on('image', function (info) {
+            console.log(info.workerID);
+            if (ids.includes(info.workerID)) {
+                // fullinf.innerHTML = info.info.split('-').slice(-1)[0]
+                document.getElementById(`${info.workerID}info`).innerHTML = info.info.split('-').slice(-1)[0]
+                let image = document.getElementById(info.workerID)
+                image.src = 'data:image/jpeg;base64,' + info.buffer;
+            } else {
+                ids.push(info.workerID)
+                const newDiv = document.createElement("div")
+                const newImage = document.createElement("img")
+                const newInfo = document.createElement("p")
+                const newName = document.createElement("p")
+                newName.innerHTML = info.workerID
+                newImage.style.width = "400.px"
+                newDiv.className = "wrap"
+                newImage.id = info.workerID
+                newDiv.id = `${info.workerID}div`
+                newInfo.id = `${info.workerID}info`
+                newDiv.append(newName)
+                newDiv.append(newImage)
+                newDiv.append(newInfo)
+                document.body.append(newDiv)
+            }
 
-            fullinf.innerHTML = info.info.split('-').slice(-1)[0]
-            inf.innerHTML = info.info
-            image.style.width = "700.px"
-            image.src = 'data:image/jpeg;base64,' + info.buffer;
+
         });
         ////
 

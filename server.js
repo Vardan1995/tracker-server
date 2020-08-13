@@ -66,7 +66,7 @@ io.on("connection", (socket) => {
     socket.on('sendd', function (data) {
         // console.log('sending room post', data.room);
         socket.broadcast.to(data.room).emit('image', {
-            image: true, buffer: data.buf.toString('base64'), info: data.info
+            image: true, buffer: data.buf.toString('base64'), info: data.info, workerID: data.workerID
         });
     });
     socket.on('alert', function (data) {
