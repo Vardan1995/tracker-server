@@ -35,7 +35,7 @@
 
 
     <script>
-        const socket = io.connect("https://tracker-serv.herokuapp.com")
+        const socket = io.connect(`https://tracker-serv.herokuapp.com?token=${localStorage.getItem("x-auth-token")}`)
         let ids = []
         ///
         socket.on("connect", () => {

@@ -4,10 +4,11 @@ const fs = require("fs")
 const cors = require('cors');
 const mongoose = require("mongoose")
 const server = require("http").Server(app)
-require("./soket/soket").listen(server)
+const io = require("./soket/soket").listen(server)
 const config = require('config');
 const auth = require("./middleware/auth")
 const userController = require("./controllers/userController")
+const isAuth = require("./controllers/isAuth")
 // const admin = require('./middleware/admin');
 // const dashboardController = require("./controllers/dashboardController")
 // const isAuth = require("./controllers/isAuth")
@@ -30,7 +31,17 @@ const corsOptions = {
     exposedHeaders: 'x-auth-token',
 };
 app.use(cors(corsOptions));
+/////////
+// io.use((socket, next) => {
+//     let token = socket.handshake.query.token;
+//     // console.log(token);
+//     if (isAuth(token)) {
+//         return next();
+//     }
+//     return next(new Error('authentication error'));
 
+// });
+//////
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/trackerAPI', { useNewUrlParser: true, useUnifiedTopology: true })/////
     .then(() => console.log('Connected to MongoDB...'))
     .catch(err => console.error('Could not connect to MongoDB...'));
