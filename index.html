@@ -38,9 +38,14 @@
         const socket = io.connect("https://tracker-serv.herokuapp.com")
         let ids = []
         ///
-        socket.emit('subscribe', 1234);
+        socket.on("connect", () => {
+            console.log("connected to the server");
+        })
+        // socket.on("disconnect", () => {
+        //     console.log("dissss");
+        // })
+        socket.emit('subscribe', { token: localStorage.getItem("x-auth-token"), room: 1234 });
         socket.on('image', function (info) {
-            console.log(info.workerID);
             if (ids.includes(info.workerID)) {
                 // fullinf.innerHTML = info.info.split('-').slice(-1)[0]
                 document.getElementById(`${info.workerID}info`).innerHTML = info.info.split('-').slice(-1)[0]
@@ -70,7 +75,7 @@
 
         function alertMessage() {
 
-            socket.emit("alert", { room: 1234, message: inp.value })
+            socket.emit("alert", { workerSoket: "vardani socket", message: inp.value })
             inp.value = ''
         }
 

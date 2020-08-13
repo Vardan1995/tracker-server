@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input placeholder="email" id="email" />
+    <br>
+    <input placeholder="password" id="password" />
+    <br>
+    <p style="color: red;" id="error"></p>
+    <button onclick="login()">Login</button>
+    <script>
+        async function login() {
+            const email = document.getElementById("email").value
+            const password = document.getElementById("password").value
+            const user = {
+                email,
+                password
+            }
+
+
+            fetch("http://localhost:8080/login", {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+
+                //make sure to serialize your JSON body
+                body: JSON.stringify({ user })
+            }).then((response) => {
+                if (response.status === 200) {
+                    console.log("success");
+                    var token = response.headers.get('x-auth-token');
+                    localStorage.setItem("x-auth-token", token)
+                    window.location.replace("./index.html")
+                } else {
+                    error.innerHTML = "wrong email or password";
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

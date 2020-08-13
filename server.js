@@ -4,12 +4,12 @@ const fs = require("fs")
 const cors = require('cors');
 const mongoose = require("mongoose")
 const server = require("http").Server(app)
-const io = require("socket.io")(server)
+require("./soket/soket").listen(server)
 const config = require('config');
-// const admin = require('./middleware/admin');
 const auth = require("./middleware/auth")
-// const dashboardController = require("./controllers/dashboardController")
 const userController = require("./controllers/userController")
+// const admin = require('./middleware/admin');
+// const dashboardController = require("./controllers/dashboardController")
 // const isAuth = require("./controllers/isAuth")
 
 app.use(express.static(__dirname));
@@ -43,52 +43,6 @@ app.get("/", (req, res) => {
 app.post("/login", userController.login)
 app.post("/create", auth, userController.create)
 
-// ######### ashxatox cod
-// io.on("connection", (socket) => {
-//     socket.on('subscribe', function (room) {
-//         console.log('joining room', room);
-//         socket.join(room);
-//     });
-
-//     socket.on('message', function (data) {
-//         console.log('sending room post', data.room);
-//         socket.broadcast.to(data.room).emit('conversation private post', {
-//             message: data.message
-//         });
-//     });
-// })
-io.on("connection", (socket) => {
-    socket.on('subscribe', function (room) {
-        console.log('joining room', room);
-        socket.join(room);
-    });
-
-    socket.on('sendd', function (data) {
-        // console.log('sending room post', data.room);
-        socket.broadcast.to(data.room).emit('image', {
-            image: true, buffer: data.buf.toString('base64'), info: data.info, workerID: data.workerID
-        });
-    });
-    socket.on('alert', function (data) {
-        // console.log('sending room post', data.room);
-        socket.broadcast.to(data.room).emit('message', { message: data.message });
-    });
-
-
-})
-
-
-// io.on("connection", (socket) => {
-//     console.log("someone connected");
-//     socket.on("sendd", (data) => {
-//         // console.log(data.buf);
-//         socket.broadcast.emit('image', { image: true, buffer: data.buf.toString('base64'), info: data.info });
-//     })
-//     socket.on("alert", (message) => {
-//         // console.log("sok alert", message.message);
-//         socket.broadcast.emit("message", message)
-//     })
-// })
 
 
 let PORT = process.env.PORT || 8080;
