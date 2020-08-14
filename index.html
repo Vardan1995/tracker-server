@@ -11,15 +11,19 @@
         }
 
         .wrap {
-            border: 2px solid green;
+            /* border: 2px solid green; */
             margin: 10px;
+            padding-right: 2px;
+            padding-left: 2px;
             display: inline-block;
             background-color: rgb(98, 104, 17);
+            border-radius: 25px
         }
 
         p {
             margin: 2px;
             color: white;
+            text-align: center
         }
     </style>
 </head>
@@ -35,23 +39,25 @@
 
 
     <script>
-        const socket = io.connect(`https://tracker-serv.herokuapp.com?token=${localStorage.getItem("x-auth-token")}`)
-        let ids = []
-        ///
+        const socket = io.connect(`https://tracker-serv.herokuapp.com/?token=${localStorage.getItem("x-auth-token")}`)//in order to connect Server` Meneger must have a valid token in his local storage
+        let ids = [] //
         socket.on("connect", () => {
             console.log("connected to the server");
         })
-        // socket.on("disconnect", () => {
-        //     console.log("dissss");
-        // })
-        socket.emit('subscribe', { token: localStorage.getItem("x-auth-token"), room: 1234 });
+
+        socket.emit('subscribe', { token: localStorage.getItem("x-auth-token"), room: 1234 });//connecting room also required valid token
         socket.on('image', function (info) {
-            if (ids.includes(info.workerID)) {
-                // fullinf.innerHTML = info.info.split('-').slice(-1)[0]
+            if (ids.includes(info.workerID)) {// if worker has alredy connected fill the frame with recived datas
+                const div = document.getElementById(`${info.workerID}div`)
                 document.getElementById(`${info.workerID}info`).innerHTML = info.info.split('-').slice(-1)[0]
+                if (info.info.includes("Facebook")) {//detect unproductive activites
+                    div.style = "background-color: red"
+                } else {
+                    div.style = "background-color:  rgb(98, 104, 17)"
+                }
                 let image = document.getElementById(info.workerID)
                 image.src = 'data:image/jpeg;base64,' + info.buffer;
-            } else {
+            } else {/// if worker dosn`t connect yet lets create frame for his screan streaming
                 ids.push(info.workerID)
                 const newDiv = document.createElement("div")
                 const newImage = document.createElement("img")
