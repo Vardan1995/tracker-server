@@ -24,7 +24,8 @@ module.exports.listen = function (app) {
             });
         });
         socket.on('alert', function (data) {
-            socket.broadcast.to(data.workerSoket).emit('message', { message: data.message });
+            socket.broadcast.to(data.workerID).emit('message', { message: data.message });
+            console.log("aalleerrtt");
         });
 
 
